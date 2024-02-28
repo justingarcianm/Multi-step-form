@@ -69,7 +69,6 @@ p {
     align-items: center;
     background-color: transparent;
     border: none;
-    cursor: pointer;
     color: var(--white);
     text-transform: uppercase;
     transition: var(--transition);
@@ -85,7 +84,6 @@ p {
     width: 16px;
 }
 
-.sidebar .step-button:hover .step-number,
 .sidebar .step-button.active .step-number {
     background-color: var(--pastel-blue);
     border-color: var(--pastel-blue);
@@ -391,7 +389,7 @@ p {
 }
 
 .addon-single:hover,
-.addon-single.active {
+.addon-single.selected {
     background-color: var(--magnolia);
 }
 
@@ -409,7 +407,7 @@ p {
     transition: var(--transition);
 }
 
-.addon-single.active .addon-left .checkbox {
+.addon-single.selected .addon-left .checkbox {
     background-color: var(--purplish-blue);
     background-image: url(assets/icon-checkmark.svg);
     background-position: center;

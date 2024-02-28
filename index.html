@@ -130,7 +130,7 @@
 
           <div class="plan-selection">
             <div
-              class="plan-single"
+              class="plan-single selected"
               id="Arcade"
               data-plan="Arcade"
               data-monthly="9"
@@ -225,7 +225,12 @@
           <p class="description">Add-ons help enhance your gaming experience</p>
 
           <div class="addon-selection">
-            <div class="addon-single">
+            <div
+              class="addon-single"
+              data-name="Online services"
+              data-monthly="1"
+              data-yearly="10"
+            >
               <div class="addon-left">
                 <div class="checkbox"></div>
                 <div class="left-content">
@@ -238,9 +243,14 @@
                 <p class="yearly">$10/yr</p>
               </div>
             </div>
-            <div class="addon-single">
+            <div
+              class="addon-single"
+              data-name="Larger storage"
+              data-monthly="2"
+              data-yearly="20"
+            >
               <div class="addon-left">
-                <input type="checkbox" />
+                <div class="checkbox"></div>
                 <div class="left-content">
                   <p>Larger storage</p>
                   <span>Extra 1TB of cloud save</span>
@@ -251,9 +261,14 @@
                 <p class="yearly">$20/yr</p>
               </div>
             </div>
-            <div class="addon-single">
+            <div
+              class="addon-single"
+              data-name="Customizable profile"
+              data-monthly="2"
+              data-yearly="20"
+            >
               <div class="addon-left">
-                <input type="checkbox" />
+                <div class="checkbox"></div>
                 <div class="left-content">
                   <p>Customizable profile</p>
                   <span>Custom theme on your profile</span>
@@ -284,24 +299,15 @@
           <div class="summary-display">
             <div class="plan-select">
               <div class="plan-select-content">
-                <p>{plan}<span class="monthly show">(Monthly)</span><span class="yearly">(Yearly)</span></p>
+                <p><span class="plan-name">{plan}</span><span class="monthly show">(Monthly)</span><span class="yearly">(Yearly)</span></p>
                 <a href="#">Change</a>
               </div>
               <div class="plan-select-price">
-                <p>${planPrice}/<span class="monthly show">mo</span><span class="yearly">yr</span></p>
+                <p>$ <span class="plan-price">{planPrice}</span>/<span class="monthly show">mo</span><span class="yearly">yr</span></p>
               </div>
             </div>
             <hr />
-            <div class="addon-selections-display">
-              <div class="addon-select">
-                <div class="addon-select-content">
-                  <p>{addon}</p>
-                </div>
-                <div class="addon-price">
-                  <p>+${addonPrice}/<span class="monthly show">mo</span><span class="yearly">yr</span></p>
-                </div>
-              </div>
-            </div>
+            <div class="addon-selections-display"></div>
           </div>
 
           <div class="total-display">
@@ -309,7 +315,7 @@
               <p>Total <span class="monthly show">(per month)</span><span class="yearly">(per year)</span></p>
             </div>
             <div class="total-price">
-              <p>${planPrice + addonPrice}/<span class="monthly show">mo</span><span class="yearly">yr</span></p>
+              <p>$<span class="calculate-price">{planPrice + addonPrice}</span>/<span class="monthly show">mo</span><span class="yearly">yr</span></p>
             </div>
           </div>
 

@@ -1,99 +1,179 @@
 window.onload = () => {
-  const nextBtns = document.querySelectorAll("button.next-step");
-  const prevBtns = document.querySelectorAll("button.previous-step");
+  function updateToMonthly() {
+    let monthly = document.querySelectorAll(".monthly");
+    let yearly = document.querySelectorAll(".yearly");
 
-  let selectedPlan = {};
-  let selectedAddons = [];
+    monthly.forEach((month) => month.classList.add("show"));
+    yearly.forEach((year) => year.classList.remove("show"));
+  }
+  function updateToYearly() {
+    let monthly = document.querySelectorAll(".monthly");
+    let yearly = document.querySelectorAll(".yearly");
 
-  function infoPageValidator() {
-    const name = document.querySelector("input#name").value;
-    const email = document.querySelector("input#email").value;
-    const phone = document.querySelector("input#phone").value;
-
-    validatorArr = [name, email, phone];
-
-    validationCheck = validatorArr.every((input) => input.length !== 0);
-
-    if (validationCheck) {
-      return true;
-    } else {
-      return false;
-    }
+    monthly.forEach((month) => month.classList.remove("show"));
+    yearly.forEach((year) => year.classList.add("show"));
   }
 
-  function addInfoPageErrors() {
-    let inputWrappers = document.querySelectorAll(".info-input-wrapper .input-group");
+  function monthlyYearlyToggle() {
+    let toggle = document.querySelector(".switch input");
+    toggle.onchange = () => (toggle.checked ? updateToYearly() : updateToMonthly());
+  }
 
-    return inputWrappers.forEach((input) => {
-      let inputValue = input.querySelector("input").value;
-      if (inputValue.length === 0) {
-        input.classList.add("error");
+  function planSelectionSet() {
+    let planSelection = document.querySelectorAll(".plan-single");
+    planSelection.forEach(
+      (plan) =>
+        (plan.onclick = () => {
+          planSelection.forEach((plan) => plan.classList.remove("selected"));
+          plan.classList.add("selected");
+        })
+    );
+  }
+
+  function addonSelection() {
+    let addons = document.querySelectorAll(".addon-single");
+    addons.forEach((addon) => (addon.onclick = () => addon.classList.toggle("selected")));
+  }
+
+  function getTotal() {
+    const planPrice = parseInt(document.querySelector(".plan-price").innerHTML);
+    let addonElements = Array.from(document.querySelectorAll("span.addon-price"));
+    let addonPrices = addonElements.reduce((total, addon) => total + parseInt(addon.innerHTML), 0);
+    let totalSpan = document.querySelector(".calculate-price");
+    const total = planPrice + addonPrices;
+    console.log(planPrice);
+    console.log(addonPrices);
+    totalSpan.innerHTML = total;
+  }
+
+  function updateSummary() {
+    const selectedPlan = document.querySelector(".plan-single.selected");
+    const selectedAddons = document.querySelectorAll(".addon-single.selected");
+    const isMonthly = document.querySelector(".monthly.show");
+
+    let addonSelectDisplay = document.querySelector(".addon-selections-display");
+    let planName = document.querySelector(".plan-name");
+    planName.innerHTML = selectedPlan.dataset.plan;
+
+    let planMonthlyPrice = document.querySelector(".plan-select-price .plan-price");
+
+    if (isMonthly) {
+      planMonthlyPrice.innerHTML = selectedPlan.dataset.monthly;
+    } else {
+      planMonthlyPrice.innerHTML = selectedPlan.dataset.yearly;
+    }
+
+    if (selectedAddons.length !== 0) {
+      addonSelectDisplay.innerHTML = "";
+      selectedAddons.forEach((addon) => {
+        let price = isMonthly ? addon.dataset.monthly : addon.dataset.yearly;
+        let addonDiv = `
+            <div class="addon-select">
+            <div class="addon-select-content">
+            <p class="addon-name">${addon.dataset.name}</p>
+          </div>
+          <div class="addon-price">
+            <p>+$<span class="addon-price">${price}</span>/<span class="monthly show">mo</span><span class="yearly">yr</span></p>
+          </div>
+        </div>
+            `;
+        addonSelectDisplay.innerHTML += addonDiv;
+      });
+    }
+
+    return getTotal();
+  }
+
+  function changePlan() {
+    let changePlanBtn = document.querySelector(".plan-select-content a");
+    changePlanBtn.onclick = () => {
+      document.querySelector("#summary").classList.remove("active");
+      document.querySelector("#plan").classList.add("active");
+    };
+  }
+
+  function personalInfoValidation() {
+    let allInputs = document.querySelectorAll(".info-input-wrapper input");
+    let inputVals = [];
+    allInputs.forEach((input) => inputVals.push(input.value));
+
+    return inputVals.every((val) => val.length !== 0);
+  }
+
+  function personalInfoAddError() {
+    let allInputs = document.querySelectorAll(".info-input-wrapper input");
+    allInputs.forEach((input) => {
+      if (input.value.length === 0) {
+        let inputGroup = input.closest(".input-group");
+        inputGroup.classList.add("error");
       }
     });
   }
 
-  function removeInfoPageErrors() {
-    let inputWrappers = document.querySelectorAll(".info-input-wrapper .input-group");
-    return inputWrappers.forEach((input) => input.classList.remove("error"));
+  function personalInfoRemoveErrors() {
+    let inputGroup = document.querySelectorAll(".info-input-wrapper .input-group");
+    inputGroup.forEach((group) => group.classList.remove("error"));
   }
 
-  function monthYearToggle() {
-    let allMonthDisplays = document.querySelectorAll(".monthly");
-    let allYearDisplays = document.querySelectorAll(".yearly");
-    let toggleBtn = document.querySelector(".pay-option input");
+  function nextStep() {
+    allNextBtns = document.querySelectorAll("button.next-step");
 
-    return (toggleBtn.onchange = (e) => {
-      let checked = e.target.checked;
-      if (checked) {
-        allMonthDisplays.forEach((month) => month.classList.remove("show"));
-        allYearDisplays.forEach((year) => year.classList.add("show"));
-      } else {
-        allMonthDisplays.forEach((month) => month.classList.add("show"));
-        allYearDisplays.forEach((year) => year.classList.remove("show"));
-      }
+    allNextBtns.forEach((nextBtn) => {
+      nextBtn.onclick = (e) => {
+        let nextStepName = e.target.closest(".progress-buttons").dataset.next;
+        let currentStep = e.target.closest(".form-step-content");
+        let allNumberSteps = document.querySelectorAll(".step-button");
+        let infoCheck = personalInfoValidation();
+
+        if (infoCheck) {
+          personalInfoRemoveErrors();
+        } else {
+          personalInfoAddError();
+          return;
+        }
+
+        if (nextStepName === "summary") {
+          updateSummary();
+        }
+
+        currentStep.classList.remove("active");
+        document.querySelector(`#${nextStepName}`).classList.add("active");
+
+        allNumberSteps.forEach((step) => {
+          if (step.id === `step-${nextStepName}`) {
+            allNumberSteps.forEach((step) => step.classList.remove("active"));
+            step.classList.add("active");
+          }
+        });
+      };
+    });
+  }
+  function prevStep() {
+    allNextBtns = document.querySelectorAll("button.previous-step");
+
+    allNextBtns.forEach((nextBtn) => {
+      nextBtn.onclick = (e) => {
+        let nextStepName = e.target.closest(".progress-buttons").dataset.previous;
+        let currentStep = e.target.closest(".form-step-content");
+        let allNumberSteps = document.querySelectorAll(".step-button");
+
+        currentStep.classList.remove("active");
+        document.querySelector(`#${nextStepName}`).classList.add("active");
+
+        allNumberSteps.forEach((step) => {
+          if (step.id === `step-${nextStepName}`) {
+            allNumberSteps.forEach((step) => step.classList.remove("active"));
+            step.classList.add("active");
+          }
+        });
+      };
     });
   }
 
-  function selectPlan() {}
-
-  function nextPage(e) {
-    let pageID = e.target.closest(".progress-buttons").dataset.next;
-    let currentPage = e.target.closest(".form-step-content");
-    let stepNumbers = document.querySelectorAll(".step-button");
-    const validateInfoPage = infoPageValidator();
-    if (!validateInfoPage) {
-      addInfoPageErrors();
-      return;
-    }
-
-    removeInfoPageErrors();
-    currentPage.classList.remove("active");
-    document.querySelector(`#${pageID}`).classList.add("active");
-    if (pageID === "complete") {
-      stepNumbers.forEach((number) => number.classList.remove("active"));
-      document.querySelector(`#step-summary`).classList.add("active");
-    } else {
-      stepNumbers.forEach((number) => number.classList.remove("active"));
-      document.querySelector(`#step-${pageID}`).classList.add("active");
-    }
-  }
-
-  function prevPage(e, direct) {
-    if (direct) {
-      console.log(direct);
-    }
-    let pageID = e.target.closest(".progress-buttons").dataset.previous;
-    let currentPage = e.target.closest(".form-step-content");
-    let stepNumbers = document.querySelectorAll(".step-button");
-
-    currentPage.classList.remove("active");
-    document.querySelector(`#${pageID}`).classList.add("active");
-    stepNumbers.forEach((number) => number.classList.remove("active"));
-    document.querySelector(`#step-${pageID}`).classList.add("active");
-  }
-
-  nextBtns.forEach((btn) => (btn.onclick = (e) => nextPage(e)));
-  prevBtns.forEach((btn) => (btn.onclick = (e) => prevPage(e)));
-
-  monthYearToggle();
+  nextStep();
+  prevStep();
+  planSelectionSet();
+  monthlyYearlyToggle();
+  addonSelection();
+  changePlan();
 };
