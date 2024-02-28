@@ -527,3 +527,70 @@ color: var(--cool-gray);
     max-width: 100px;
     margin: 0 auto;
 }
+
+@media (max-width:750px) {
+
+    body {
+        overflow: auto;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .form-wrapper {
+        grid-template-columns: 1fr;
+        height: 100%;
+        position: relative;
+        min-width: 100vw;
+        min-height: 100vh;
+        box-shadow: none;
+        background-color: var(--magnolia);
+    }
+    .sidebar {
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        gap:0;
+        background-size: cover;
+        height: 20vh;
+        border-radius: 0;
+    }
+    .step-content {
+        display: none!important;
+    }
+
+    .form-content {
+
+    }
+
+    .form-step-content {
+        background-color: var(--white);
+        padding: 3rem;
+        border-radius: .5rem;
+        position: absolute;
+        top: 22%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80vw;
+    }
+
+    .progress-buttons {
+        position: absolute;
+        bottom: -50%;
+        right: 0;
+        left: 0;
+        background-color: var(--white);
+        width: 100%;
+        padding: 2rem!important;
+        max-width: -moz-available;
+    }
+    .plan-selection {
+        flex-direction: column;
+    }
+
+    .plan-single {
+        flex-direction: row;
+        justify-content: flex-start;
+        width: 100%;
+        gap: 1rem;
+    }
+}
